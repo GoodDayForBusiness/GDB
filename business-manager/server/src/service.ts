@@ -78,15 +78,15 @@ export class BbsArticleService {
     //typeScript에서 클래스의 메서드 정의할때 function 키워드 없이 메서드 이름만 적어주면 된다.
     async getStoreZones(params : getStoreZonesParams) : Promise<any>{ //구분ID, 행정구역코드 파라미터로, 구체적 설명은 readme에
         //ex) divId = ctprvnCd(시도단위로), key = 11 (서울특별시)
-        const url =`https://apis.data.go.kr/B553077/api/open/sdsc2/storeZoneInAdmi?divId=${params.divId}&key=${params.key}&type=json&serviceKey=${process.env.DATA_API_KEY3}` 
+        const url =`https://apis.data.go.kr/B553077/api/open/sdsc2/storeZoneInAdmi?divId=${params.divId}&key=${params.key}&type=json&serviceKey=${process.env.DATA_API_KEY}` 
         const res = await fetch(url).then((response)=>{
         return response.json()
         }).then((data)=>{
-            console.log(data.body.items)
+            //console.log(data.body.items)
             return data.body.items
         })
 
-        return res
+        return res.length
     }
 
     //각 상권 업종별 점포 수 조회 함수(9번 오퍼레이션)
@@ -97,7 +97,7 @@ export class BbsArticleService {
 
     while(true){
         //ex) divId =  indsLclsCd(대분류),key = I2(음식점)
-        const url = `https://apis.data.go.kr/B553077/api/open/sdsc2/storeListInArea?key=${params.key}&indsLclsCd=${params.indsLclsCd}&indsMclsCd=${params.indsMclsCd}&indsSclsCd=${params.indsSclsCd}&numOfRows=${params.numOfRows}&pageNo=${params.pageNo}&type=json&serviceKey=${process.env.DATA_API_KEY}`
+        const url = `https://apis.data.go.kr/B553077/api/open/sdsc2/storeListInArea?key=${params.key}&indsLclsCd=${params.indsLclsCd}&indsMclsCd=${params.indsMclsCd}&indsSclsCd=${params.indsSclsCd}&numOfRows=${params.numOfRows}&pageNo=${pageNo}&type=json&serviceKey=${process.env.DATA_API_KEY}`
         const res = await fetch(url).then((response)=>{
             return response.json()
         }).then((data)=>{
@@ -140,7 +140,7 @@ export class BbsArticleService {
 
         //console.log(`상권명은 ${zoneName} 이며, 상권번호는 ${zoneNum}`)
         console.log(`${zones.length} 중 ${cnt}개 완료...`)
-
+        cnt++
 
         const industrys = await this.getStoreByZoneandIndustry(params2)
         //const industrys = await this.getStoreByZoneandIndustry(String(zoneNum),industryCode)
@@ -171,16 +171,36 @@ export class BbsArticleService {
     
 }
 
-
+/*
 async function main(){
 
     const tmp : BbsArticleService = new BbsArticleService();
-    const tmp1 : getStoreZonesParams  = {
+    const tmp0 : getStoreZonesParams  = {
         divId : 'ctprvnCd',
-        key : '11'
+        key : '27'
     }
-    console.log(await tmp.getStoreZones(tmp1))
+
+    const tmp1 : getStoreByZoneandIndustryParams = {
+        key : '10001',
+        indsLclsCd : 'I2',
+        indsMclsCd : '' ,
+        indsSclsCd : '' ,
+        numOfRows : '20',
+        pageNo : '1'
+    }
+    
+    const tmp2 : CollectZoneStoreDataParams = {
+        getStoreZonesParams: tmp0,
+        industryCode: 'I2'
+    }
+    
+    //console.log(await tmp.getStoreByZoneandIndustry(tmp1))
+    console.log(await tmp.collectZoneStoreData(tmp2))
+    //console.log(await tmp.getStoreZones(tmp1))
+
     
 }
 
 main()
+
+*/

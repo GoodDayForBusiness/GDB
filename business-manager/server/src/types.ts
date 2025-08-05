@@ -15,7 +15,6 @@ export interface getStoreByZoneandIndustryParams {
 
 export interface CollectZoneStoreDataParams {
   getStoreZonesParams: getStoreZonesParams;
-  zoneCode: string;
   industryCode: string;
 };
 
